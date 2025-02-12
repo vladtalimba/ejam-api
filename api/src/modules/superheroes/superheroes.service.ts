@@ -7,13 +7,16 @@ const superHeroes:  CreateSuperheroDto[] = [];
 @Injectable()
 export class SuperheroesService {
 
-    getAll(): CreateSuperheroDto[]{
+    async getAll(): Promise<CreateSuperheroDto[]>{
         // Sort superheroes array in descending order based on the humility score.
         superHeroes.sort((a, b) => b.humilityScore - a.humilityScore);
         return superHeroes;
     }
 
-    postSuperhero(data: CreateSuperheroDto): CreateSuperheroDto[]{
+    async postSuperhero(entry: any): Promise<CreateSuperheroDto[]>{
+        // Parse the response body.
+        const data:CreateSuperheroDto = JSON.parse(entry.data);
+        
         // Basic validation. Could use various npm packages in a full scale application.
         if(!data){
             throw new BadRequestException("Superhero data is required");
@@ -35,6 +38,6 @@ export class SuperheroesService {
         // Add a new superhero to the array.
         superHeroes.push(data);
         // Return the get function to get back the new sorted list of superheroes.
-        return this.getAll();
+        return await this.getAll();
     }
 }
